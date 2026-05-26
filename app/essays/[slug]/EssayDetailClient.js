@@ -5,7 +5,7 @@ import SettingsMenu from "../../components/SettingsMenu";
 import { format, parseISO } from "date-fns";
 import { zhCN, zhTW, enUS } from "date-fns/locale";
 
-import CusdisComments from "../../components/CusdisComments";
+import Script from "next/script";
 
 export default function EssayDetailClient({ essay, contentHtml }) {
   const { t, language, theme } = useSettings();
@@ -46,17 +46,18 @@ export default function EssayDetailClient({ essay, contentHtml }) {
         <div className="reading-divider"></div>
         <p className="end-mark">{t.endMark}</p>
         
-        <div style={{ marginTop: '4rem', textAlign: 'left' }}>
-          <CusdisComments
-            attrs={{
-              host: 'https://cusdis.com',
-              appId: 'cebdd209-f404-44a9-8181-6d4c1eafcf94',
-              pageId: essay.slug,
-              pageTitle: essay.title,
-              pageUrl: `https://Fengyue-Yj.github.io/wuxian/essays/${essay.slug}`,
-              theme: theme === 'dark' ? 'dark' : 'light'
-            }}
-          />
+        <div style={{ marginTop: '4rem', textAlign: 'left', minHeight: '300px' }}>
+          <div 
+            id="cusdis_thread"
+            data-host="https://cusdis.com"
+            data-app-id="cebdd209-f404-44a9-8181-6d4c1eafcf94"
+            data-page-id={essay.slug}
+            data-page-url={`https://Fengyue-Yj.github.io/wuxian/essays/${essay.slug}`}
+            data-page-title={essay.title}
+            data-theme={theme === 'dark' ? 'dark' : 'auto'}
+            style={{ width: '100%' }}
+          ></div>
+          <Script src="https://cusdis.com/js/cusdis.es.js" strategy="lazyOnload" />
         </div>
       </footer>
     </div>
