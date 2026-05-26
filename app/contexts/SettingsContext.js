@@ -61,6 +61,7 @@ export function SettingsProvider({ children }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const savedLang = localStorage.getItem("app-lang");
     const savedTheme = localStorage.getItem("app-theme");
