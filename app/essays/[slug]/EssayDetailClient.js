@@ -6,9 +6,27 @@ import { format, parseISO } from "date-fns";
 import { zhCN, zhTW, enUS } from "date-fns/locale";
 
 import Script from "next/script";
+import { useEffect } from "react";
 
 export default function EssayDetailClient({ essay, contentHtml }) {
   const { t, language, theme } = useSettings();
+
+  useEffect(() => {
+    // Aggressive fix for Cusdis iframe scrolling on mobile
+    const interval = setInterval(() => {
+      const iframe = document.querySelector('#cusdis_thread iframe');
+      if (iframe) {
+        iframe.setAttribute('scrolling', 'no');
+        iframe.style.overflow = 'hidden';
+        // Add a little extra height buffer to prevent inner scrollbars
+        const currentHeight = parseInt(iframe.style.height || '0');
+        if (currentHeight > 0) {
+          iframe.style.height = (currentHeight + 30) + 'px';
+        }
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
   
   const formatDate = (dateString) => {
     try {
