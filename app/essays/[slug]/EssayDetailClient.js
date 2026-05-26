@@ -12,20 +12,26 @@ export default function EssayDetailClient({ essay, contentHtml }) {
   const { t, language, theme } = useSettings();
 
   useEffect(() => {
-    // Aggressive fix for Cusdis iframe scrolling on mobile
-    const interval = setInterval(() => {
-      const iframe = document.querySelector('#cusdis_thread iframe');
-      if (iframe) {
-        iframe.setAttribute('scrolling', 'no');
-        iframe.style.overflow = 'hidden';
-        // Add a little extra height buffer to prevent inner scrollbars
-        const currentHeight = parseInt(iframe.style.height || '0');
-        if (currentHeight > 0) {
-          iframe.style.height = (currentHeight + 30) + 'px';
+    // Listen for Cusdis resize events to fix mobile scrolling cleanly
+    const handleCusdisMessage = (e) => {
+      try {
+        const msg = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        if (msg.from === 'cusdis' && msg.event === 'resize') {
+          const iframe = document.querySelector('#cusdis_thread iframe');
+          if (iframe) {
+            // Add a static buffer to the calculated height to prevent mobile scrollbars
+            iframe.style.height = (parseInt(msg.data) + 30) + 'px';
+            iframe.setAttribute('scrolling', 'no');
+            iframe.style.overflow = 'hidden';
+          }
         }
+      } catch (err) {
+        // Ignore JSON parse errors from other extensions
       }
-    }, 1000);
-    return () => clearInterval(interval);
+    };
+    
+    window.addEventListener('message', handleCusdisMessage);
+    return () => window.removeEventListener('message', handleCusdisMessage);
   }, []);
   
   const formatDate = (dateString) => {
