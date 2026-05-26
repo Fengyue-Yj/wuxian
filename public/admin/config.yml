@@ -1,7 +1,8 @@
 backend:
   name: git-gateway
   branch: master
-  site_domain: legendary-blancmange-2f13c0.netlify.app
+  identity_url: "https://legendary-blancmange-2f13c0.netlify.app/.netlify/identity"
+  gateway_url: "https://legendary-blancmange-2f13c0.netlify.app/.netlify/git"
 
 
 media_folder: "public/images"
