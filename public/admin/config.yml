@@ -1,6 +1,7 @@
 backend:
   name: git-gateway
   branch: master
+  site_domain: legendary-blancmange-2f13c0.netlify.app
 
 
 media_folder: "public/images"
