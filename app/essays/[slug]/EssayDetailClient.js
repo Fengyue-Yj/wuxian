@@ -4,36 +4,11 @@ import { useSettings } from "../../contexts/SettingsContext";
 import SettingsMenu from "../../components/SettingsMenu";
 import { format, parseISO } from "date-fns";
 import { zhCN, zhTW, enUS } from "date-fns/locale";
-
-import Script from "next/script";
-import { useEffect } from "react";
+import { ReactCusdis } from "react-cusdis";
 
 export default function EssayDetailClient({ essay, contentHtml }) {
   const { t, language, theme } = useSettings();
 
-  useEffect(() => {
-    // Listen for Cusdis resize events to fix mobile scrolling cleanly
-    const handleCusdisMessage = (e) => {
-      try {
-        const msg = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-        if (msg.from === 'cusdis' && msg.event === 'resize') {
-          const iframe = document.querySelector('#cusdis_thread iframe');
-          if (iframe) {
-            // Add a static buffer to the calculated height to prevent mobile scrollbars
-            iframe.style.height = (parseInt(msg.data) + 30) + 'px';
-            iframe.setAttribute('scrolling', 'no');
-            iframe.style.overflow = 'hidden';
-          }
-        }
-      } catch (err) {
-        // Ignore JSON parse errors from other extensions
-      }
-    };
-    
-    window.addEventListener('message', handleCusdisMessage);
-    return () => window.removeEventListener('message', handleCusdisMessage);
-  }, []);
-  
   const formatDate = (dateString) => {
     try {
       const dateObj = parseISO(dateString);
@@ -44,7 +19,7 @@ export default function EssayDetailClient({ essay, contentHtml }) {
       return dateString;
     }
   };
-  
+
   return (
     <div className="reading-wrapper fade-in">
       <SettingsMenu />
@@ -63,25 +38,25 @@ export default function EssayDetailClient({ essay, contentHtml }) {
           </span>
         </div>
       </header>
-      
+
       <main className="essay-content" dangerouslySetInnerHTML={{ __html: contentHtml }} />
-      
+
       <footer className="reading-footer">
         <div className="reading-divider"></div>
         <p className="end-mark">{t.endMark}</p>
         
-        <div style={{ marginTop: '4rem', textAlign: 'left', minHeight: '300px' }}>
-          <div 
-            id="cusdis_thread"
-            data-host="https://cusdis.com"
-            data-app-id="cebdd209-f404-44a9-8181-6d4c1eafcf94"
-            data-page-id={essay.slug}
-            data-page-url={`https://Fengyue-Yj.github.io/wuxian/essays/${essay.slug}`}
-            data-page-title={essay.title}
-            data-theme={theme === 'dark' ? 'dark' : 'auto'}
-            style={{ width: '100%' }}
-          ></div>
-          <Script src="https://cusdis.com/js/cusdis.es.js" strategy="lazyOnload" />
+        {/* Clean, official ReactCusdis integration with no hacks */}
+        <div className="comments-section" style={{ marginTop: '4rem', width: '100%' }}>
+          <ReactCusdis
+            attrs={{
+              host: 'https://cusdis.com',
+              appId: 'cebdd209-f404-44a9-8181-6d4c1eafcf94',
+              pageId: essay.slug,
+              pageTitle: essay.title,
+              pageUrl: `https://Fengyue-Yj.github.io/wuxian/essays/${essay.slug}`,
+              theme: theme === 'dark' ? 'dark' : 'light'
+            }}
+          />
         </div>
       </footer>
     </div>
