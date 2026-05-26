@@ -1,9 +1,7 @@
 backend:
-  name: github
-  repo: Fengyue-Yj/wuxian
-  branch: main
+  name: git-gateway
+  branch: master
 
-local_backend: true
 
 media_folder: "public/images"
 public_folder: "/wuxian/images"
