@@ -82,7 +82,7 @@ a:hover { opacity: 0.7; }
   transform: translate(-50%, -50%);
   width: 150%;
   height: 180%;
-  background-image: url('/images/ink-wash.png');
+  background-image: url('/wuxian/images/ink-wash.png');
   background-size: cover;
   background-position: center;
   opacity: 0.3;

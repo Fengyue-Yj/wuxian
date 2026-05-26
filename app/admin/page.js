@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export default function AdminRedirect() {
   useEffect(() => {
-    window.location.href = "/admin/index.html";
+    window.location.href = "/wuxian/admin/index.html";
   }, []);
 
   return (

@@ -1,12 +1,12 @@
 backend:
   name: github
-  repo: your-github-username/literary-homepage # 用户后续需要替换成自己的 repo
+  repo: Fengyue-Yj/wuxian
   branch: main
 
 local_backend: true
 
 media_folder: "public/images"
-public_folder: "/images"
+public_folder: "/wuxian/images"
 
 collections:
   - name: "essays"
