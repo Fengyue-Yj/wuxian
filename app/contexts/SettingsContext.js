@@ -92,10 +92,9 @@ export function SettingsProvider({ children }) {
 
   const t = translations[language];
 
-  // Provide a placeholder while mounting to avoid hydration mismatch
   return (
     <SettingsContext.Provider value={{ language, changeLanguage, theme, toggleTheme, t }}>
-      {!mounted ? <div style={{ visibility: "hidden" }}>{children}</div> : children}
+      {children}
     </SettingsContext.Provider>
   );
 }
