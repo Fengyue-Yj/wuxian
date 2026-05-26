@@ -16,7 +16,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="zh" className={`${dancingScript.variable}`} suppressHydrationWarning>
+    <html lang="zh-CN" className={`${dancingScript.variable} dark`} suppressHydrationWarning>
       <body>
         <SettingsProvider>
           {children}

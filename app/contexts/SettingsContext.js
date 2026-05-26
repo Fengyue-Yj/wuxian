@@ -57,7 +57,7 @@ export const translations = {
 
 export function SettingsProvider({ children }) {
   const [language, setLanguage] = useState("zh-CN");
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("dark");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -71,7 +71,12 @@ export function SettingsProvider({ children }) {
       setTheme(savedTheme);
       if (savedTheme === "dark") {
         document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
       }
+    } else {
+      // Default is dark, so ensure it's applied if no saved preference
+      document.documentElement.classList.add("dark");
     }
   }, []);
 
