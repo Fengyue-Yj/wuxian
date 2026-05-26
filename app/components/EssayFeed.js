@@ -158,7 +158,10 @@ export default function EssayFeed({ essays }) {
         {filteredEssays.map((essay) => (
           <article className="essay-entry" key={essay.slug}>
             <div className="essay-meta">
-              <span className="essay-date">{formatDate(essay.date)}</span>
+              <span className="essay-date">
+                {formatDate(essay.date)}
+                {essay.author && ` · ${essay.author}`}
+              </span>
               <span className="essay-dash">—</span>
             </div>
             <div className="essay-content-preview">

@@ -31,7 +31,10 @@ export default function EssayDetailClient({ essay, contentHtml }) {
       <header className="reading-header">
         <h1 className="reading-title">{essay.title}</h1>
         <div className="reading-meta">
-          <span className="reading-date">{formatDate(essay.date)}</span>
+          <span className="reading-date">
+            {formatDate(essay.date)}
+            {essay.author && ` · ${essay.author}`}
+          </span>
         </div>
       </header>
       

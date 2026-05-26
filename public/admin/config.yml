@@ -16,5 +16,6 @@ collections:
     fields:
       - {label: "标题", name: "title", widget: "string"}
       - {label: "发布日期", name: "date", widget: "datetime"}
+      - {label: "作者", name: "author", widget: "string", required: false}
       - {label: "摘要", name: "excerpt", widget: "text", required: false}
       - {label: "正文", name: "body", widget: "markdown"}
