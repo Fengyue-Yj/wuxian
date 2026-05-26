@@ -1,0 +1,21 @@
+backend:
+  name: github
+  repo: your-github-username/literary-homepage # 用户后续需要替换成自己的 repo
+  branch: main
+
+local_backend: true
+
+media_folder: "public/images"
+public_folder: "/images"
+
+collections:
+  - name: "essays"
+    label: "随笔 (Essays)"
+    folder: "content/essays"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "标题", name: "title", widget: "string"}
+      - {label: "发布日期", name: "date", widget: "datetime"}
+      - {label: "摘要", name: "excerpt", widget: "text", required: false}
+      - {label: "正文", name: "body", widget: "markdown"}
