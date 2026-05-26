@@ -2,7 +2,7 @@
   --background: #fdfbf7;
   --foreground: #2c2a29;
   --meta-color: #66645e;
-  --font-serif: var(--font-noto-serif-sc), "Noto Serif SC", "Songti SC", "STSong", "SimSun", "Times New Roman", serif;
+  --font-serif: "Songti SC", "STSong", "SimSun", "Noto Serif SC", "Times New Roman", serif;
 }
 
 /* Dark Mode Overrides */

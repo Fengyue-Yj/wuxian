@@ -1,13 +1,6 @@
-import { Noto_Serif_SC, Dancing_Script } from "next/font/google";
+import { Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { SettingsProvider } from "./contexts/SettingsContext";
-
-const notoSerifSC = Noto_Serif_SC({
-  weight: ['200', '400', '600', '900'],
-  subsets: ["latin"],
-  variable: "--font-noto-serif-sc",
-  display: 'swap',
-});
 
 const dancingScript = Dancing_Script({
   weight: ['400', '700'],
@@ -23,7 +16,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="zh" className={`${notoSerifSC.variable} ${dancingScript.variable}`} suppressHydrationWarning>
+    <html lang="zh" className={`${dancingScript.variable}`} suppressHydrationWarning>
       <body>
         <SettingsProvider>
           {children}
