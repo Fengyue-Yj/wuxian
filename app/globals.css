@@ -498,7 +498,7 @@ html.dark .settings-options button.active {
   letter-spacing: 0.2em;
 }
 
-/* Cusdis iframe mobile scrollbar and display fixes */
+/* Cusdis iframe standard display */
 .comments-section {
   width: 100%;
   margin-top: 4rem;
@@ -510,5 +510,4 @@ html.dark .settings-options button.active {
   display: block !important;
   width: 100% !important;
   border: none !important;
-  overflow: hidden !important;
 }
