@@ -5,8 +5,10 @@ import SettingsMenu from "../../components/SettingsMenu";
 import { format, parseISO } from "date-fns";
 import { zhCN, zhTW, enUS } from "date-fns/locale";
 
+import { ReactCusdis } from 'react-cusdis';
+
 export default function EssayDetailClient({ essay, contentHtml }) {
-  const { t, language } = useSettings();
+  const { t, language, theme } = useSettings();
   
   const formatDate = (dateString) => {
     try {
@@ -43,6 +45,19 @@ export default function EssayDetailClient({ essay, contentHtml }) {
       <footer className="reading-footer">
         <div className="reading-divider"></div>
         <p className="end-mark">{t.endMark}</p>
+        
+        <div style={{ marginTop: '4rem', textAlign: 'left' }}>
+          <ReactCusdis
+            attrs={{
+              host: 'https://cusdis.com',
+              appId: 'cebdd209-f404-44a9-8181-6d4c1eafcf94',
+              pageId: essay.slug,
+              pageTitle: essay.title,
+              pageUrl: `https://Fengyue-Yj.github.io/wuxian/essays/${essay.slug}`,
+              theme: theme === 'dark' ? 'dark' : 'light'
+            }}
+          />
+        </div>
       </footer>
     </div>
   );
