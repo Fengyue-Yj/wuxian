@@ -4,7 +4,7 @@ import { useSettings } from "../../contexts/SettingsContext";
 import SettingsMenu from "../../components/SettingsMenu";
 import { format, parseISO } from "date-fns";
 import { zhCN, zhTW, enUS } from "date-fns/locale";
-import { ReactCusdis } from "react-cusdis";
+
 
 export default function EssayDetailClient({ essay, contentHtml }) {
   const { t, language, theme } = useSettings();
@@ -45,19 +45,7 @@ export default function EssayDetailClient({ essay, contentHtml }) {
         <div className="reading-divider"></div>
         <p className="end-mark">{t.endMark}</p>
         
-        {/* Clean, official ReactCusdis integration with no hacks */}
-        <div className="comments-section" style={{ marginTop: '4rem', width: '100%' }}>
-          <ReactCusdis
-            attrs={{
-              host: 'https://cusdis.com',
-              appId: 'cebdd209-f404-44a9-8181-6d4c1eafcf94',
-              pageId: essay.slug,
-              pageTitle: essay.title,
-              pageUrl: `https://Fengyue-Yj.github.io/wuxian/essays/${essay.slug}`,
-              theme: theme === 'dark' ? 'dark' : 'light'
-            }}
-          />
-        </div>
+
       </footer>
     </div>
   );
