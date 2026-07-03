@@ -160,7 +160,6 @@ export default function EssayFeed({ essays }) {
             <div className="essay-meta">
               <span className="essay-date">
                 {formatDate(essay.date)}
-                {essay.author && ` · ${essay.author}`}
               </span>
               <span className="essay-dash">—</span>
             </div>
