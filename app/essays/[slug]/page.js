@@ -428,7 +428,41 @@ function enhanceEssayHtml(html) {
   return output.join("");
 }
 
+function unescapeCmsEmphasisOutsideCode(markdown) {
+  const str = String(markdown || "");
+  if (!str.includes("\\*")) return str;
+
+  // Preserve fenced code blocks and inline code spans while normalizing Sveltia CMS \* escapes
+  const segments = str.split(/(```[\s\S]*?```|~~~[\s\S]*?~~~|`[^`\n]+`)/g);
+  return segments
+    .map((seg, idx) => {
+      if (idx % 2 === 1) return seg;
+      return seg.replace(/(?:\\\*){2}([^\n]+?)(?:\\\*){2}/g, "**$1**");
+    })
+    .join("");
+}
+
+const cjkStrongExtension = {
+  name: "strong",
+  level: "inline",
+  start(src) {
+    return src.indexOf("**");
+  },
+  tokenizer(src) {
+    // Allow bold spans directly next to Chinese quotation marks/punctuation where strict CommonMark flanking fails
+    const match = /^\*\*([^\s*](?:[^\n]*?[^\s*])?)\*\*/.exec(src);
+    if (!match) return undefined;
+    return {
+      type: "strong",
+      raw: match[0],
+      text: match[1],
+      tokens: this.lexer.inlineTokens(match[1]),
+    };
+  },
+};
+
 const markdownParser = new Marked({
+  extensions: [cjkStrongExtension],
   renderer: {
     image(token) {
       const normalizedHref = typeof token?.href === "string"
@@ -482,7 +516,8 @@ export default async function Essay({ params }) {
   }
 
   const { content, ...essayMeta } = essay;
-  const contentHtml = enhanceEssayHtml(markdownParser.parse(content || ""));
+  const normalizedContent = unescapeCmsEmphasisOutsideCode(content || "");
+  const contentHtml = enhanceEssayHtml(markdownParser.parse(normalizedContent));
 
   return <EssayDetailClient essay={essayMeta} contentHtml={contentHtml} />;
 }
