@@ -9,18 +9,18 @@
   --caption-color: #5e5b55;
   --rule-color: rgba(44, 42, 41, 0.22);
   --caption-bg: rgba(44, 42, 41, 0.025);
-  --font-serif: var(--font-serif-en), var(--font-serif-zh), "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", Georgia, serif;
-  --font-sans: var(--font-sans-en), var(--font-sans-zh), "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: var(--font-serif-en), "KingHwa_OldSong", "STSong", "Songti SC", "SimSun", Georgia, serif;
+  --font-ui: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 html[lang="zh-TW"] {
-  --font-serif: var(--font-serif-en), "Noto Serif TC", "Source Han Serif TC", "Songti TC", "STSongti-TC-Regular", "LiSong Pro", var(--font-serif-zh), "PMingLiU", Georgia, serif;
-  --font-sans: var(--font-sans-en), "Noto Sans TC", "PingFang TC", "Heiti TC", "Microsoft JhengHei", var(--font-sans-zh), sans-serif;
+  --font-serif: var(--font-serif-en), "KingHwa_OldSong", "Songti TC", "LiSong Pro", "PMingLiU", Georgia, serif;
+  --font-ui: "PingFang TC", "Heiti TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 html[lang="en"] {
-  --font-serif: var(--font-serif-en), "Newsreader", Georgia, var(--font-serif-zh), serif;
-  --font-sans: var(--font-sans-en), "Inter", -apple-system, BlinkMacSystemFont, var(--font-sans-zh), sans-serif;
+  --font-serif: var(--font-serif-en), "Cormorant Garamond", Georgia, "KingHwa_OldSong", serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 /* Dark Mode Overrides */
@@ -172,8 +172,8 @@ html.dark .intro-section::before {
   opacity: 0.5;
 }
 .main-nav {
-  font-family: var(--font-sans);
-  font-size: 0.96rem;
+  font-family: var(--font-serif);
+  font-size: 1rem;
   letter-spacing: 0.04em;
   white-space: nowrap;
   display: flex;
@@ -195,8 +195,8 @@ html.dark .intro-section::before {
 .nav-btn {
   background: none;
   border: none;
-  font-family: var(--font-sans);
-  font-size: 0.96rem;
+  font-family: var(--font-serif);
+  font-size: 1rem;
   letter-spacing: 0.04em;
   color: inherit;
   cursor: pointer;
@@ -220,8 +220,8 @@ html.dark .intro-section::before {
 .search-input {
   background: transparent;
   border: none;
-  font-family: var(--font-sans);
-  font-size: 0.96rem;
+  font-family: var(--font-serif);
+  font-size: 1rem;
   color: inherit;
   padding: 2px 0;
   margin: 0 0.4rem;
@@ -271,8 +271,8 @@ html[lang="en"] .search-input::placeholder {
   border: 1px solid var(--meta-color);
   padding: 0.6rem 1rem;
   border-radius: 6px;
-  font-family: var(--font-sans);
-  font-size: 0.85rem;
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -323,7 +323,7 @@ html.dark .copy-status { color: #c95c55; }
   box-shadow: 0 4px 25px rgba(0,0,0,0.1);
   z-index: 60;
   max-width: calc(100vw - 2rem);
-  font-family: var(--font-sans);
+  font-family: var(--font-ui);
   font-variant-numeric: tabular-nums;
 }
 html.dark .calendar-popup { box-shadow: 0 4px 25px rgba(0,0,0,0.6); }
@@ -470,7 +470,7 @@ html.dark .settings-dropdown { box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
   font-size: 0.85rem;
   color: var(--meta-color);
   margin-bottom: 0.6rem;
-  font-family: var(--font-sans);
+  font-family: var(--font-ui);
 }
 .settings-options {
   display: flex;
@@ -486,7 +486,7 @@ html.dark .settings-dropdown { box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
   color: var(--meta-color);
   cursor: pointer;
   transition: all 0.2s;
-  font-family: var(--font-sans);
+  font-family: var(--font-ui);
 }
 .settings-options button:hover {
   background-color: rgba(0,0,0,0.05);
@@ -529,17 +529,17 @@ html.dark .settings-options button.active {
   padding-top: 0.55rem;
   min-width: 138px;
   color: var(--meta-color);
-  font-family: var(--font-sans);
-  font-size: 0.92rem;
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
   letter-spacing: 0.03em;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 .essay-dash { font-weight: 300; }
 .essay-content-preview { flex-grow: 1; max-width: 550px; }
 .essay-title {
   font-family: var(--font-serif);
-  font-size: 1.9rem;
-  font-weight: 500;
+  font-size: 1.95rem;
+  font-weight: 400;
   margin: 0 0 0.85rem 0;
   text-decoration: underline;
   text-decoration-thickness: 1px;
@@ -549,15 +549,15 @@ html.dark .settings-options button.active {
 }
 .essay-excerpt {
   font-family: var(--font-serif);
-  font-size: 1.08rem;
+  font-size: 1.12rem;
   line-height: 1.75;
   margin: 0;
   color: var(--foreground);
-  opacity: 0.88;
+  opacity: 0.9;
 }
 .no-essays {
-  font-family: var(--font-sans);
-  font-size: 0.98rem;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
   color: var(--meta-color);
 }
 
@@ -570,8 +570,8 @@ html.dark .settings-options button.active {
 }
 .reading-nav { margin-bottom: 4rem; }
 .back-link {
-  font-family: var(--font-sans);
-  font-size: 0.92rem;
+  font-family: var(--font-serif);
+  font-size: 1rem;
   letter-spacing: 0.03em;
   color: var(--meta-color);
   transition: color 0.3s ease;
@@ -582,18 +582,18 @@ html.dark .settings-options button.active {
 .reading-header { margin-bottom: 4rem; text-align: center; }
 .reading-title {
   font-family: var(--font-serif);
-  font-size: 2.15rem;
-  font-weight: 600;
+  font-size: 2.2rem;
+  font-weight: 400;
   margin: 0 0 1rem 0;
   line-height: 1.42;
   letter-spacing: 0.03em;
 }
 .reading-meta {
-  font-family: var(--font-sans);
+  font-family: var(--font-serif);
   color: var(--meta-color);
-  font-size: 0.94rem;
+  font-size: 1rem;
   letter-spacing: 0.04em;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 .reading-meta::after {
   content: "";
@@ -608,7 +608,7 @@ html.dark .settings-options button.active {
   text-align: justify;
   text-justify: inter-ideograph;
   font-family: var(--font-serif);
-  font-size: 1.125rem;
+  font-size: 1.15rem;
   line-height: 1.98;
   letter-spacing: 0.015em;
   text-indent: 2em;
@@ -618,10 +618,10 @@ html.dark .settings-options button.active {
   font-weight: 600;
 }
 .essay-content p.essay-note {
-  font-family: var(--font-sans);
-  font-size: 0.88rem;
-  line-height: 1.7;
-  letter-spacing: 0.03em;
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  line-height: 1.75;
+  letter-spacing: 0.04em;
   color: var(--meta-color);
   text-align: center;
   text-indent: 0;
@@ -697,12 +697,12 @@ html.dark .settings-options button.active {
 .essay-content .essay-caption,
 .essay-content figcaption {
   position: relative;
-  font-family: var(--font-sans);
+  font-family: var(--font-serif);
   font-style: normal;
   font-weight: 400;
-  font-size: 0.86rem;
-  line-height: 1.68;
-  letter-spacing: 0.02em;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  letter-spacing: 0.04em;
   color: var(--caption-color);
   text-align: center;
   text-indent: 0;
@@ -756,9 +756,9 @@ html[lang="en"] .essay-content blockquote {
   margin-bottom: 2rem;
 }
 .end-mark {
-  font-family: var(--font-sans);
+  font-family: var(--font-serif);
   color: var(--meta-color);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   letter-spacing: 0.25em;
 }
 

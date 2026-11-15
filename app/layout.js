@@ -1,35 +1,12 @@
-import {
-  Dancing_Script,
-  Inter,
-  Newsreader,
-  Noto_Sans_SC,
-  Noto_Serif_SC,
-} from "next/font/google";
+import { Cormorant_Garamond, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { SettingsProvider } from "./contexts/SettingsContext";
 
-const newsreader = Newsreader({
-  subsets: ["latin"],
+const cormorantGaramond = Cormorant_Garamond({
+  weight: ["400", "500", "600"],
   style: ["normal", "italic"],
+  subsets: ["latin"],
   variable: "--font-serif-en",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans-en",
-  display: "swap",
-});
-
-const notoSerifSC = Noto_Serif_SC({
-  subsets: ["latin"],
-  variable: "--font-serif-zh",
-  display: "swap",
-});
-
-const notoSansSC = Noto_Sans_SC({
-  subsets: ["latin"],
-  variable: "--font-sans-zh",
   display: "swap",
 });
 
@@ -39,6 +16,9 @@ const dancingScript = Dancing_Script({
   variable: "--font-cursive",
   display: "swap",
 });
+
+const KINGHWA_OLDSONG_CSS =
+  "https://cdn.jsdelivr.net/npm/@chinese-fonts/jhlst@3.0.0/dist/%E4%BA%AC%E8%8F%AF%E8%80%81%E5%AE%8B%E4%BD%93v2_002/result.css";
 
 const initPreferencesScript = `(function(){try{var r=document.documentElement;var t=localStorage.getItem('app-theme');if(t==='light'){r.classList.remove('dark');}else{r.classList.add('dark');}var l=localStorage.getItem('app-lang');r.lang=(l==='zh-CN'||l==='zh-TW'||l==='en')?l:'zh-CN';}catch(e){}})();`;
 
@@ -57,10 +37,12 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="zh-CN"
-      className={`${newsreader.variable} ${inter.variable} ${notoSerifSC.variable} ${notoSansSC.variable} ${dancingScript.variable} dark`}
+      className={`${cormorantGaramond.variable} ${dancingScript.variable} dark`}
       suppressHydrationWarning
     >
       <head>
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
+        <link rel="stylesheet" href={KINGHWA_OLDSONG_CSS} />
         <script dangerouslySetInnerHTML={{ __html: initPreferencesScript }} />
       </head>
       <body>
