@@ -1,3 +1,7 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 :root {
   --background: #fdfbf7;
   --foreground: #2c2a29;
@@ -10,6 +14,10 @@ html.dark {
   --background: #121212;
   --foreground: #e4e4e4;
   --meta-color: #888888;
+}
+
+html, body {
+  overflow-x: clip;
 }
 
 body {
@@ -82,7 +90,7 @@ a:hover { opacity: 0.7; }
   transform: translate(-50%, -50%);
   width: 150%;
   height: 180%;
-  background-image: url('/wuxian/images/ink-wash.png');
+  background-image: url('/wuxian/images/ink-wash.webp');
   background-size: cover;
   background-position: center;
   opacity: 0.3;
@@ -180,6 +188,7 @@ html.dark .intro-section::before {
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--foreground);
+  max-width: 100%;
 }
 .search-input {
   background: transparent;
@@ -190,6 +199,8 @@ html.dark .intro-section::before {
   padding: 2px 0;
   margin: 0 0.4rem;
   width: 240px;
+  min-width: 0;
+  max-width: 100%;
   outline: none;
 }
 .search-input::placeholder {
@@ -197,16 +208,21 @@ html.dark .intro-section::before {
   font-size: 0.95rem;
   font-style: italic;
 }
-.calendar-icon-btn {
+.calendar-icon-btn,
+.search-clear-btn {
   background: none;
   border: none;
   color: var(--meta-color);
   cursor: pointer;
-  padding: 0 0.2rem;
+  padding: 0 0.25rem;
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
 }
-.calendar-icon-btn:hover { color: var(--foreground); }
+.calendar-icon-btn:hover,
+.search-clear-btn:hover { color: var(--foreground); }
 
 /* Email Popup Cards */
 .nav-item-wrapper {
@@ -233,6 +249,7 @@ html.dark .intro-section::before {
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   z-index: 50;
   white-space: nowrap;
+  user-select: text;
 }
 html.dark .email-popup {
   box-shadow: 0 4px 15px rgba(0,0,0,0.5);
@@ -257,6 +274,9 @@ html.dark .email-popup {
   font-weight: 400;
 }
 html.dark .copy-status { color: #c95c55; }
+.copy-status.copy-failed {
+  color: var(--meta-color);
+}
 
 /* Calendar Popup */
 .calendar-popup {
@@ -265,21 +285,107 @@ html.dark .copy-status { color: #c95c55; }
   right: 0;
   margin-top: 1rem;
   background-color: var(--background);
+  color: var(--foreground);
   border: 1px solid var(--meta-color);
   border-radius: 8px;
   padding: 1rem;
   box-shadow: 0 4px 25px rgba(0,0,0,0.1);
   z-index: 60;
+  max-width: calc(100vw - 2rem);
 }
 html.dark .calendar-popup { box-shadow: 0 4px 25px rgba(0,0,0,0.6); }
 
-/* React Day Picker Custom Styles */
-.day-has-essay {
-  font-weight: bold !important;
-  color: var(--foreground) !important;
-  position: relative;
+/* React Day Picker v10 Custom Styles (scoped to beat react-day-picker/dist/style.css) */
+.calendar-popup .rdp-root {
+  --rdp-accent-color: var(--foreground);
+  --rdp-accent-background-color: rgba(44, 42, 41, 0.08);
+  --rdp-today-color: #9e2a22;
+  --rdp-day-width: 38px;
+  --rdp-day-height: 38px;
+  --rdp-day_button-width: 36px;
+  --rdp-day_button-height: 36px;
+  --rdp-day_button-border: 1.5px solid transparent;
+  --rdp-selected-border: 1.5px solid var(--foreground);
+  --rdp-disabled-opacity: 0.25;
+  --rdp-outside-opacity: 0.4;
+  --rdp-nav_button-width: 2rem;
+  --rdp-nav_button-height: 2rem;
+  --rdp-nav_button-disabled-opacity: 0.3;
+  --rdp-nav-height: 2.25rem;
+  --rdp-range_start-color: var(--background);
+  --rdp-range_end-color: var(--background);
+  color: var(--foreground);
 }
-.day-has-essay::after {
+html.dark .calendar-popup .rdp-root {
+  --rdp-accent-background-color: rgba(228, 228, 228, 0.12);
+  --rdp-today-color: #c95c55;
+}
+.calendar-popup .rdp-month_caption {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--foreground);
+  padding-inline-start: 0.25rem;
+}
+.calendar-popup .rdp-weekday {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--meta-color);
+}
+.calendar-popup .rdp-chevron {
+  fill: var(--foreground);
+  width: 16px;
+  height: 16px;
+}
+.calendar-popup .rdp-button_previous,
+.calendar-popup .rdp-button_next {
+  border-radius: 50%;
+  color: var(--foreground);
+  transition: background-color 0.2s ease;
+}
+.calendar-popup .rdp-button_previous:hover:not(:disabled):not([aria-disabled="true"]),
+.calendar-popup .rdp-button_next:hover:not(:disabled):not([aria-disabled="true"]) {
+  background-color: var(--rdp-accent-background-color);
+}
+.calendar-popup .rdp-day_button {
+  position: relative;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.calendar-popup .rdp-day_button:disabled {
+  cursor: default;
+}
+.calendar-popup .rdp-day:not(.rdp-disabled) .rdp-day_button:hover {
+  background-color: var(--rdp-accent-background-color);
+}
+.calendar-popup .rdp-today:not(.rdp-outside) .rdp-day_button {
+  color: var(--rdp-today-color);
+  font-weight: 600;
+}
+.calendar-popup .rdp-selected {
+  font-weight: 700;
+  font-size: inherit;
+}
+.calendar-popup .rdp-selected .rdp-day_button {
+  border: var(--rdp-selected-border);
+  background-color: var(--rdp-accent-background-color);
+}
+.calendar-popup .rdp-disabled:not(.rdp-selected) {
+  opacity: var(--rdp-disabled-opacity);
+}
+.calendar-popup .rdp-day_button:focus-visible,
+.calendar-popup .rdp-button_previous:focus-visible,
+.calendar-popup .rdp-button_next:focus-visible {
+  outline: 1.5px solid var(--meta-color);
+  outline-offset: 1px;
+}
+.calendar-popup .rdp-day.day-has-essay .rdp-day_button {
+  font-weight: 700;
+  color: var(--foreground);
+}
+.calendar-popup .rdp-day.day-has-essay.rdp-today:not(.rdp-outside) .rdp-day_button {
+  color: var(--rdp-today-color);
+}
+.calendar-popup .rdp-day.day-has-essay .rdp-day_button::after {
   content: "";
   position: absolute;
   bottom: 4px;
@@ -287,11 +393,9 @@ html.dark .calendar-popup { box-shadow: 0 4px 25px rgba(0,0,0,0.6); }
   transform: translateX(-50%);
   width: 4px;
   height: 4px;
-  background-color: var(--foreground);
+  background-color: currentColor;
   border-radius: 50%;
 }
-.rdp-day_disabled { opacity: 0.25; }
-.rdp { --rdp-cell-size: 40px; --rdp-accent-color: var(--foreground); }
 
 /* Settings Menu */
 .settings-container {
@@ -413,16 +517,6 @@ html.dark .settings-options button.active {
 }
 .no-essays { font-size: 1.1rem; color: var(--meta-color); }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .essay-entry { flex-direction: column; gap: 0.5rem; }
-  .essay-meta { padding-top: 0; min-width: auto; }
-  .essay-feed { padding-left: 0; }
-  .poem-main { font-size: 1.6rem; }
-  .poem-main.poem-cursive { font-size: 2.2rem; }
-  .brand-name { font-size: 1.8rem; }
-}
-
 /* READING PAGE (Essay Detail) */
 .reading-wrapper {
   max-width: 680px;
@@ -468,13 +562,42 @@ html.dark .settings-options button.active {
   margin-top: 3.5rem;
   margin-bottom: 1.5rem;
   text-align: center;
+  line-height: 1.5;
+}
+.essay-content h2 {
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  margin-top: 4rem;
+  margin-bottom: 1.75rem;
+}
+.essay-content h3 {
+  font-size: 1.25rem;
+  letter-spacing: 0.03em;
+  margin-top: 3rem;
+  margin-bottom: 1.25rem;
 }
 .essay-content img {
   max-width: 100%;
   height: auto;
   border-radius: 2px;
-  margin: 3rem 0;
+  margin: 3rem auto;
   display: block;
+}
+.essay-content p:has(> img) {
+  text-indent: 0;
+}
+.essay-content p:has(> img:only-child) {
+  margin: 0;
+}
+.essay-content p:has(> img:only-child) + p:has(> em:only-child),
+.essay-content figcaption {
+  margin-top: -2.1rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
+  text-indent: 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--meta-color);
 }
 .essay-content blockquote {
   border-left: 1px solid var(--meta-color);
@@ -496,6 +619,127 @@ html.dark .settings-options button.active {
   color: var(--meta-color);
   font-size: 1rem;
   letter-spacing: 0.2em;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .nav-item-wrapper:last-child .email-popup {
+    left: auto;
+    right: 0;
+    transform: none;
+    animation: fadeIn 0.25s ease-out forwards;
+  }
+  .nav-item-wrapper:last-child .email-popup::before {
+    left: auto;
+    right: 1rem;
+    transform: rotate(45deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .layout-wrapper,
+  .reading-wrapper {
+    padding: 3rem 1.25rem 6rem 1.25rem;
+  }
+  .settings-container {
+    top: 1.5rem;
+    right: 1.25rem;
+  }
+  .settings-dropdown {
+    max-width: calc(100vw - 2.5rem);
+  }
+  .site-header { margin-bottom: 2.5rem; }
+  .intro-section {
+    margin-bottom: 3.5rem;
+    padding: 3rem 0;
+  }
+  .divider-nav-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-bottom: 3.5rem;
+  }
+  .divider-line {
+    width: 100%;
+    flex-grow: 0;
+  }
+  .main-nav {
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.6rem;
+    white-space: normal;
+  }
+  .main-nav.is-searching .search-container {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  .main-nav.is-searching .nav-separator-search {
+    display: none;
+  }
+  .search-input-wrapper {
+    width: 100%;
+  }
+  .search-input {
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0 0.4rem 0 0;
+    font-size: 1rem;
+  }
+  .email-popup {
+    left: auto;
+    right: 0;
+    transform: none;
+    max-width: calc(100vw - 2.5rem);
+    animation: fadeIn 0.25s ease-out forwards;
+  }
+  .email-popup::before {
+    left: auto;
+    right: 1rem;
+    transform: rotate(45deg);
+  }
+  .calendar-popup {
+    right: 0;
+    max-width: calc(100vw - 2.5rem);
+    padding: 0.75rem;
+    overflow-x: auto;
+  }
+  .essay-entry { flex-direction: column; gap: 0.5rem; }
+  .essay-meta { padding-top: 0; min-width: auto; }
+  .essay-feed { padding-left: 0; gap: 3rem; }
+  .essay-title { font-size: 1.65rem; }
+  .poem-main { font-size: 1.6rem; }
+  .poem-main.poem-cursive { font-size: 2.2rem; }
+  .brand-name { font-size: 1.8rem; }
+  .reading-title { font-size: 1.75rem; }
+  .essay-content h2 {
+    font-size: 1.35rem;
+    margin-top: 3rem;
+    margin-bottom: 1.25rem;
+  }
+  .essay-content h3 {
+    font-size: 1.15rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  .essay-content img {
+    margin: 2rem auto;
+  }
+  .essay-content p:has(> img:only-child) + p:has(> em:only-child),
+  .essay-content figcaption {
+    margin-top: -1.25rem;
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-popup .rdp-root {
+    --rdp-day-width: 34px;
+    --rdp-day-height: 34px;
+    --rdp-day_button-width: 32px;
+    --rdp-day_button-height: 32px;
+  }
 }
 
 

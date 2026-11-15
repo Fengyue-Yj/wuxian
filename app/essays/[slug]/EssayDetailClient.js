@@ -5,9 +5,8 @@ import SettingsMenu from "../../components/SettingsMenu";
 import { format, parseISO } from "date-fns";
 import { zhCN, zhTW, enUS } from "date-fns/locale";
 
-
 export default function EssayDetailClient({ essay, contentHtml }) {
-  const { t, language, theme } = useSettings();
+  const { t, language } = useSettings();
 
   const formatDate = (dateString) => {
     try {
@@ -44,8 +43,6 @@ export default function EssayDetailClient({ essay, contentHtml }) {
       <footer className="reading-footer">
         <div className="reading-divider"></div>
         <p className="end-mark">{t.endMark}</p>
-        
-
       </footer>
     </div>
   );

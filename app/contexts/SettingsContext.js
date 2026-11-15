@@ -1,8 +1,15 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useSyncExternalStore } from "react";
 
 const SettingsContext = createContext();
+
+const DEFAULT_LANG = "zh-CN";
+const DEFAULT_THEME = "dark";
+const PREFERENCE_EVENT = "app-preferences-change";
+
+let memoryLang = null;
+let memoryTheme = null;
 
 export const translations = {
   "zh-CN": {
@@ -10,13 +17,16 @@ export const translations = {
     brandTitle: "无限",
     poem1: "枝生无限月，花满自然秋。",
     poem2: "Branches cradle the endless moon, flowers bloom a natural autumn.",
-    searchPlaceholder: "搜索标题或日期 (如 2026-05)...",
+    searchPlaceholder: "搜索标题、摘要或日期 (如 2026-05)...",
     searchBtn: "查找",
+    clearSearch: "清除搜索",
+    toggleCalendar: "按日期筛选",
     submitBtn: "投稿",
     contactBtn: "联系",
     noEssays: "暂无随笔发布。",
     noMatch: "没有找到匹配的随笔。",
     copied: "已复制邮箱地址",
+    copyFailed: "复制失败，请手动复制",
     backHome: "← 返回首页",
     endMark: "完",
     essays: "随笔"
@@ -26,13 +36,16 @@ export const translations = {
     brandTitle: "無限",
     poem1: "枝生無限月，花滿自然秋。",
     poem2: "Branches cradle the endless moon, flowers bloom a natural autumn.",
-    searchPlaceholder: "搜尋標題或日期 (如 2026-05)...",
+    searchPlaceholder: "搜尋標題、摘要或日期 (如 2026-05)...",
     searchBtn: "尋找",
+    clearSearch: "清除搜尋",
+    toggleCalendar: "依日期篩選",
     submitBtn: "投稿",
     contactBtn: "聯絡",
     noEssays: "暫無隨筆發佈。",
     noMatch: "沒有找到匹配的隨筆。",
     copied: "已複製電子郵件",
+    copyFailed: "複製失敗，請手動複製",
     backHome: "← 返回首頁",
     endMark: "完",
     essays: "隨筆"
@@ -42,60 +55,103 @@ export const translations = {
     brandTitle: "Infinity",
     poem1: "Branches cradle the endless moon, flowers bloom a natural autumn.",
     poem2: "枝生无限月，花满自然秋。",
-    searchPlaceholder: "Search titles or dates...",
+    searchPlaceholder: "Search titles, excerpts, or dates...",
     searchBtn: "Search",
+    clearSearch: "Clear search",
+    toggleCalendar: "Filter by date",
     submitBtn: "Submit",
     contactBtn: "Contact",
     noEssays: "No essays published yet.",
     noMatch: "No matching essays found.",
     copied: "Email address copied!",
+    copyFailed: "Copy failed",
     backHome: "← Back Home",
     endMark: "END",
     essays: "Essays"
   }
 };
 
+function subscribePreferences(callback) {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener("storage", callback);
+  window.addEventListener(PREFERENCE_EVENT, callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(PREFERENCE_EVENT, callback);
+  };
+}
+
+function getLangSnapshot() {
+  if (memoryLang) return memoryLang;
+  try {
+    const saved = localStorage.getItem("app-lang");
+    if (saved && Object.prototype.hasOwnProperty.call(translations, saved)) {
+      return saved;
+    }
+  } catch {
+    // Ignore storage read errors in restricted environments
+  }
+  return DEFAULT_LANG;
+}
+
+function getThemeSnapshot() {
+  if (memoryTheme) return memoryTheme;
+  try {
+    const saved = localStorage.getItem("app-theme");
+    if (saved === "light" || saved === "dark") {
+      return saved;
+    }
+  } catch {
+    // Ignore storage read errors in restricted environments
+  }
+  return DEFAULT_THEME;
+}
+
 export function SettingsProvider({ children }) {
-  const [language, setLanguage] = useState("zh-CN");
-  const [theme, setTheme] = useState("dark");
-  const [mounted, setMounted] = useState(false);
+  const language = useSyncExternalStore(
+    subscribePreferences,
+    getLangSnapshot,
+    () => DEFAULT_LANG
+  );
+  const theme = useSyncExternalStore(
+    subscribePreferences,
+    getThemeSnapshot,
+    () => DEFAULT_THEME
+  );
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-    const savedLang = localStorage.getItem("app-lang");
-    const savedTheme = localStorage.getItem("app-theme");
-    
-    if (savedLang) setLanguage(savedLang);
-    if (savedTheme) {
-      setTheme(savedTheme);
-      if (savedTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    } else {
-      // Default is dark, so ensure it's applied if no saved preference
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
+    document.documentElement.lang = language;
+  }, [language]);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
 
   const toggleTheme = (newTheme) => {
-    setTheme(newTheme);
-    localStorage.setItem("app-theme", newTheme);
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
+    if (newTheme !== "dark" && newTheme !== "light") return;
+    try {
+      localStorage.setItem("app-theme", newTheme);
+      memoryTheme = null;
+    } catch {
+      memoryTheme = newTheme;
     }
+    document.documentElement.classList.toggle("dark", newTheme === "dark");
+    window.dispatchEvent(new Event(PREFERENCE_EVENT));
   };
 
   const changeLanguage = (lang) => {
-    setLanguage(lang);
-    localStorage.setItem("app-lang", lang);
+    if (!Object.prototype.hasOwnProperty.call(translations, lang)) return;
+    try {
+      localStorage.setItem("app-lang", lang);
+      memoryLang = null;
+    } catch {
+      memoryLang = lang;
+    }
+    document.documentElement.lang = lang;
+    window.dispatchEvent(new Event(PREFERENCE_EVENT));
   };
 
-  const t = translations[language];
+  const t = translations[language] || translations[DEFAULT_LANG];
 
   return (
     <SettingsContext.Provider value={{ language, changeLanguage, theme, toggleTheme, t }}>
