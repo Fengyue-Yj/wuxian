@@ -6,14 +6,31 @@
   --background: #fdfbf7;
   --foreground: #2c2a29;
   --meta-color: #66645e;
-  --font-serif: "Songti SC", "STSong", "SimSun", "Noto Serif SC", "Times New Roman", serif;
+  --caption-color: #5e5b55;
+  --rule-color: rgba(44, 42, 41, 0.22);
+  --caption-bg: rgba(44, 42, 41, 0.025);
+  --font-serif: var(--font-serif-en), var(--font-serif-zh), "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", Georgia, serif;
+  --font-sans: var(--font-sans-en), var(--font-sans-zh), "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html[lang="zh-TW"] {
+  --font-serif: var(--font-serif-en), "Noto Serif TC", "Source Han Serif TC", "Songti TC", "STSongti-TC-Regular", "LiSong Pro", var(--font-serif-zh), "PMingLiU", Georgia, serif;
+  --font-sans: var(--font-sans-en), "Noto Sans TC", "PingFang TC", "Heiti TC", "Microsoft JhengHei", var(--font-sans-zh), sans-serif;
+}
+
+html[lang="en"] {
+  --font-serif: var(--font-serif-en), "Newsreader", Georgia, var(--font-serif-zh), serif;
+  --font-sans: var(--font-sans-en), "Inter", -apple-system, BlinkMacSystemFont, var(--font-sans-zh), sans-serif;
 }
 
 /* Dark Mode Overrides */
 html.dark {
   --background: #121212;
   --foreground: #e4e4e4;
-  --meta-color: #888888;
+  --meta-color: #8c8a84;
+  --caption-color: #9e9c96;
+  --rule-color: rgba(228, 228, 228, 0.18);
+  --caption-bg: rgba(228, 228, 228, 0.03);
 }
 
 html, body {
@@ -24,9 +41,10 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-serif);
-  line-height: 1.6;
+  line-height: 1.65;
   margin: 0;
   padding: 0;
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -60,15 +78,21 @@ a:hover { opacity: 0.7; }
 
 .site-header { margin-bottom: 4rem; }
 .brand-name {
+  font-family: var(--font-serif);
   font-size: 2.2rem;
   font-weight: 600;
   margin: 0;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.05em;
+  line-height: 1.25;
 }
 .brand-title {
-  font-size: 1.1rem;
-  margin: 0.2rem 0 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.08rem;
+  font-weight: 400;
+  margin: 0.25rem 0 0 0;
   color: var(--foreground);
+  opacity: 0.85;
+  letter-spacing: 0.14em;
   font-style: normal;
 }
 
@@ -109,16 +133,16 @@ html.dark .intro-section::before {
   font-size: 2.2rem;
   font-weight: 400;
   margin: 0 0 1rem 0;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   color: var(--foreground);
 }
 .poem-sub {
-  font-size: 1.15rem;
+  font-size: 1.18rem;
   font-style: italic;
   line-height: 1.6;
   margin: 0;
   color: var(--meta-color);
-  font-family: "Times New Roman", Times, serif;
+  font-family: var(--font-serif);
 }
 
 .poem-main.poem-cursive {
@@ -148,7 +172,9 @@ html.dark .intro-section::before {
   opacity: 0.5;
 }
 .main-nav {
-  font-size: 1.1rem;
+  font-family: var(--font-sans);
+  font-size: 0.96rem;
+  letter-spacing: 0.04em;
   white-space: nowrap;
   display: flex;
   align-items: center;
@@ -157,7 +183,7 @@ html.dark .intro-section::before {
 }
 .nav-separator {
   color: var(--meta-color);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 /* Nav Actions */
@@ -169,8 +195,9 @@ html.dark .intro-section::before {
 .nav-btn {
   background: none;
   border: none;
-  font-family: inherit;
-  font-size: 1.1rem;
+  font-family: var(--font-sans);
+  font-size: 0.96rem;
+  letter-spacing: 0.04em;
   color: inherit;
   cursor: pointer;
   padding: 0;
@@ -193,8 +220,8 @@ html.dark .intro-section::before {
 .search-input {
   background: transparent;
   border: none;
-  font-family: inherit;
-  font-size: 1.1rem;
+  font-family: var(--font-sans);
+  font-size: 0.96rem;
   color: inherit;
   padding: 2px 0;
   margin: 0 0.4rem;
@@ -205,7 +232,10 @@ html.dark .intro-section::before {
 }
 .search-input::placeholder {
   color: var(--meta-color);
-  font-size: 0.95rem;
+  font-size: 0.88rem;
+  font-style: normal;
+}
+html[lang="en"] .search-input::placeholder {
   font-style: italic;
 }
 .calendar-icon-btn,
@@ -241,6 +271,7 @@ html.dark .intro-section::before {
   border: 1px solid var(--meta-color);
   padding: 0.6rem 1rem;
   border-radius: 6px;
+  font-family: var(--font-sans);
   font-size: 0.85rem;
   display: flex;
   flex-direction: column;
@@ -292,6 +323,8 @@ html.dark .copy-status { color: #c95c55; }
   box-shadow: 0 4px 25px rgba(0,0,0,0.1);
   z-index: 60;
   max-width: calc(100vw - 2rem);
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
 }
 html.dark .calendar-popup { box-shadow: 0 4px 25px rgba(0,0,0,0.6); }
 
@@ -437,7 +470,7 @@ html.dark .settings-dropdown { box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
   font-size: 0.85rem;
   color: var(--meta-color);
   margin-bottom: 0.6rem;
-  font-family: sans-serif;
+  font-family: var(--font-sans);
 }
 .settings-options {
   display: flex;
@@ -453,7 +486,7 @@ html.dark .settings-dropdown { box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
   color: var(--meta-color);
   cursor: pointer;
   transition: all 0.2s;
-  font-family: sans-serif;
+  font-family: var(--font-sans);
 }
 .settings-options button:hover {
   background-color: rgba(0,0,0,0.05);
@@ -493,29 +526,40 @@ html.dark .settings-options button.active {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding-top: 0.5rem;
-  min-width: 130px;
+  padding-top: 0.55rem;
+  min-width: 138px;
   color: var(--meta-color);
-  font-size: 1.1rem;
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  letter-spacing: 0.03em;
+  font-variant-numeric: tabular-nums;
 }
 .essay-dash { font-weight: 300; }
 .essay-content-preview { flex-grow: 1; max-width: 550px; }
 .essay-title {
-  font-size: 2rem;
-  font-weight: 400;
-  margin: 0 0 1rem 0;
+  font-family: var(--font-serif);
+  font-size: 1.9rem;
+  font-weight: 500;
+  margin: 0 0 0.85rem 0;
   text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 6px;
-  line-height: 1.3;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 7px;
+  line-height: 1.38;
+  letter-spacing: 0.015em;
 }
 .essay-excerpt {
-  font-size: 1.15rem;
-  line-height: 1.6;
+  font-family: var(--font-serif);
+  font-size: 1.08rem;
+  line-height: 1.75;
   margin: 0;
   color: var(--foreground);
+  opacity: 0.88;
 }
-.no-essays { font-size: 1.1rem; color: var(--meta-color); }
+.no-essays {
+  font-family: var(--font-sans);
+  font-size: 0.98rem;
+  color: var(--meta-color);
+}
 
 /* READING PAGE (Essay Detail) */
 .reading-wrapper {
@@ -526,22 +570,31 @@ html.dark .settings-options button.active {
 }
 .reading-nav { margin-bottom: 4rem; }
 .back-link {
-  font-size: 1.1rem;
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  letter-spacing: 0.03em;
   color: var(--meta-color);
   transition: color 0.3s ease;
-  font-style: italic;
+  font-style: normal;
 }
 .back-link:hover { color: var(--foreground); }
 .back-link .arrow { font-style: normal; margin-right: 0.3rem; }
 .reading-header { margin-bottom: 4rem; text-align: center; }
 .reading-title {
-  font-size: 2.2rem;
-  font-weight: 400;
+  font-family: var(--font-serif);
+  font-size: 2.15rem;
+  font-weight: 600;
   margin: 0 0 1rem 0;
-  line-height: 1.4;
-  letter-spacing: 0.05em;
+  line-height: 1.42;
+  letter-spacing: 0.03em;
 }
-.reading-meta { color: var(--meta-color); font-size: 1.1rem; }
+.reading-meta {
+  font-family: var(--font-sans);
+  color: var(--meta-color);
+  font-size: 0.94rem;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
 .reading-meta::after {
   content: "";
   display: block;
@@ -551,60 +604,147 @@ html.dark .settings-options button.active {
   margin: 2rem auto 0 auto;
 }
 .essay-content p {
-  margin-bottom: 2rem;
+  margin-bottom: 1.85rem;
   text-align: justify;
-  font-size: 1.15rem;
-  line-height: 2;
+  text-justify: inter-ideograph;
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  line-height: 1.98;
+  letter-spacing: 0.015em;
   text-indent: 2em;
+  overflow-wrap: break-word;
+}
+.essay-content strong {
+  font-weight: 600;
+}
+.essay-content p.essay-note {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  color: var(--meta-color);
+  text-align: center;
+  text-indent: 0;
+  margin-bottom: 0.45rem;
+}
+.essay-content p.essay-note + :not(.essay-note) {
+  margin-top: 2.25rem;
 }
 .essay-content h1, .essay-content h2, .essay-content h3 {
+  font-family: var(--font-serif);
   font-weight: 600;
   margin-top: 3.5rem;
   margin-bottom: 1.5rem;
   text-align: center;
-  line-height: 1.5;
+  line-height: 1.48;
 }
 .essay-content h2 {
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   letter-spacing: 0.04em;
-  margin-top: 4rem;
-  margin-bottom: 1.75rem;
+  margin-top: 3.75rem;
+  margin-bottom: 1.65rem;
 }
 .essay-content h3 {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   letter-spacing: 0.03em;
-  margin-top: 3rem;
-  margin-bottom: 1.25rem;
+  margin-top: 2.85rem;
+  margin-bottom: 1.2rem;
 }
 .essay-content img {
   max-width: 100%;
   height: auto;
   border-radius: 2px;
-  margin: 3rem auto;
+  margin: 2.75rem auto;
   display: block;
 }
 .essay-content p:has(> img) {
   text-indent: 0;
 }
-.essay-content p:has(> img:only-child) {
-  margin: 0;
+.essay-content .essay-figure {
+  margin: 2.75rem auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
 }
-.essay-content p:has(> img:only-child) + p:has(> em:only-child),
+.essay-content .essay-figure.essay-figure-caption-only {
+  margin: 1.65rem auto 2.25rem auto;
+}
+.essay-content .essay-figure-media {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+}
+.essay-content .essay-figure-pair .essay-figure-media {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  align-items: center;
+}
+.essay-content .essay-figure img {
+  margin: 0;
+  max-width: 100%;
+  height: auto;
+  border-radius: 2px;
+  display: block;
+}
+.essay-content .essay-figure-pair .essay-figure-media img {
+  width: 100%;
+}
+.essay-content .essay-caption,
 .essay-content figcaption {
-  margin-top: -2.1rem;
-  margin-bottom: 2.5rem;
+  position: relative;
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.86rem;
+  line-height: 1.68;
+  letter-spacing: 0.02em;
+  color: var(--caption-color);
   text-align: center;
   text-indent: 0;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: var(--meta-color);
+  text-wrap: balance;
+  max-width: min(100%, 34rem);
+  margin: 0 auto;
+  padding: 0.55rem 0.75rem 0 0.75rem;
+}
+.essay-content .essay-caption::before,
+.essay-content figcaption::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 1px;
+  background-color: var(--rule-color);
+}
+.essay-content .essay-caption.essay-caption-standalone {
+  background-color: var(--caption-bg);
+  border-top: 1px solid var(--rule-color);
+  border-bottom: 1px solid var(--rule-color);
+  border-radius: 2px;
+  padding: 0.65rem 1.1rem;
+}
+.essay-content .essay-caption.essay-caption-standalone::before {
+  content: none;
+}
+.essay-content .essay-caption em,
+.essay-content figcaption em {
+  font-style: normal;
 }
 .essay-content blockquote {
-  border-left: 1px solid var(--meta-color);
-  padding-left: 2rem;
-  margin: 3rem 0;
-  font-style: italic;
+  border-left: 1.5px solid var(--meta-color);
+  padding-left: 1.75rem;
+  margin: 2.5rem 0;
+  font-style: normal;
   color: var(--meta-color);
+}
+html[lang="en"] .essay-content blockquote {
+  font-style: italic;
 }
 .essay-content blockquote p { text-indent: 0; }
 .reading-footer { margin-top: 6rem; text-align: center; }
@@ -616,9 +756,10 @@ html.dark .settings-options button.active {
   margin-bottom: 2rem;
 }
 .end-mark {
+  font-family: var(--font-sans);
   color: var(--meta-color);
-  font-size: 1rem;
-  letter-spacing: 0.2em;
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
 }
 
 /* Responsive */
@@ -706,15 +847,22 @@ html.dark .settings-options button.active {
     overflow-x: auto;
   }
   .essay-entry { flex-direction: column; gap: 0.5rem; }
-  .essay-meta { padding-top: 0; min-width: auto; }
+  .essay-meta { padding-top: 0; min-width: auto; font-size: 0.88rem; }
   .essay-feed { padding-left: 0; gap: 3rem; }
-  .essay-title { font-size: 1.65rem; }
+  .essay-title { font-size: 1.58rem; }
   .poem-main { font-size: 1.6rem; }
   .poem-main.poem-cursive { font-size: 2.2rem; }
   .brand-name { font-size: 1.8rem; }
-  .reading-title { font-size: 1.75rem; }
+  .reading-title { font-size: 1.7rem; }
+  .essay-content p {
+    font-size: 1.06rem;
+    line-height: 1.9;
+  }
+  .essay-content p.essay-note {
+    font-size: 0.84rem;
+  }
   .essay-content h2 {
-    font-size: 1.35rem;
+    font-size: 1.32rem;
     margin-top: 3rem;
     margin-bottom: 1.25rem;
   }
@@ -726,10 +874,26 @@ html.dark .settings-options button.active {
   .essay-content img {
     margin: 2rem auto;
   }
-  .essay-content p:has(> img:only-child) + p:has(> em:only-child),
+  .essay-content .essay-figure {
+    margin: 2.15rem auto;
+    gap: 0.7rem;
+  }
+  .essay-content .essay-figure.essay-figure-caption-only {
+    margin: 1.35rem auto 1.85rem auto;
+  }
+  .essay-content .essay-figure-media {
+    gap: 0.65rem;
+  }
+  .essay-content .essay-figure-pair .essay-figure-media {
+    gap: 0.5rem;
+  }
+  .essay-content .essay-caption,
   .essay-content figcaption {
-    margin-top: -1.25rem;
-    margin-bottom: 2rem;
+    font-size: 0.82rem;
+    padding: 0.5rem 0.35rem 0 0.35rem;
+  }
+  .essay-content .essay-caption.essay-caption-standalone {
+    padding: 0.55rem 0.85rem;
   }
 }
 

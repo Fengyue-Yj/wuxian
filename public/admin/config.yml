@@ -7,6 +7,19 @@ backend:
 media_folder: "public/images"
 public_folder: "/wuxian/images"
 
+media_libraries:
+  default:
+    config:
+      slugify_filename: true
+      transformations:
+        raster_image:
+          format: webp
+          quality: 82
+          width: 1600
+          height: 1600
+        svg:
+          optimize: true
+
 collections:
   - name: "essays"
     label: "随笔 (Essays)"

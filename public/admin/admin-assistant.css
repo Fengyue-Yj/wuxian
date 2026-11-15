@@ -1,0 +1,397 @@
+.wx-admin-root {
+  --wx-bg: #fdfbf7;
+  --wx-surface: #f5f1e8;
+  --wx-border: rgba(44, 42, 41, 0.16);
+  --wx-text: #2c2a29;
+  --wx-muted: #66645e;
+  --wx-accent: #9e2a22;
+  --wx-accent-soft: rgba(158, 42, 34, 0.1);
+  --wx-ok: #266942;
+  --wx-warn: #9a5d12;
+  --wx-shadow: 0 12px 36px rgba(0, 0, 0, 0.16);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  color: var(--wx-text);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+@media (prefers-color-scheme: dark) {
+  .wx-admin-root {
+    --wx-bg: #181818;
+    --wx-surface: #222222;
+    --wx-border: rgba(228, 228, 228, 0.16);
+    --wx-text: #e6e4df;
+    --wx-muted: #9c9a92;
+    --wx-accent: #d3645d;
+    --wx-accent-soft: rgba(211, 100, 93, 0.16);
+    --wx-ok: #5bb57f;
+    --wx-warn: #e0a453;
+    --wx-shadow: 0 16px 42px rgba(0, 0, 0, 0.55);
+  }
+}
+
+html[data-theme="dark"] .wx-admin-root,
+html.dark .wx-admin-root {
+  --wx-bg: #181818;
+  --wx-surface: #222222;
+  --wx-border: rgba(228, 228, 228, 0.16);
+  --wx-text: #e6e4df;
+  --wx-muted: #9c9a92;
+  --wx-accent: #d3645d;
+  --wx-accent-soft: rgba(211, 100, 93, 0.16);
+  --wx-ok: #5bb57f;
+  --wx-warn: #e0a453;
+  --wx-shadow: 0 16px 42px rgba(0, 0, 0, 0.55);
+}
+
+.wx-admin-pill {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 9990;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--wx-border);
+  background: var(--wx-bg);
+  color: var(--wx-text);
+  box-shadow: var(--wx-shadow);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: transform 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.wx-admin-pill:hover {
+  transform: translateY(-1px);
+  border-color: var(--wx-accent);
+}
+
+.wx-admin-pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--wx-ok);
+  flex-shrink: 0;
+}
+
+.wx-admin-pill-dot.is-off {
+  background: var(--wx-muted);
+}
+
+.wx-admin-pill-dot.is-busy {
+  background: var(--wx-accent);
+  animation: wx-pulse 1s ease-in-out infinite;
+}
+
+@keyframes wx-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(1.25); }
+}
+
+.wx-admin-toast-stack {
+  position: fixed;
+  right: 18px;
+  bottom: 66px;
+  z-index: 9991;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: min(400px, calc(100vw - 36px));
+  pointer-events: none;
+}
+
+.wx-admin-toast {
+  pointer-events: auto;
+  background: var(--wx-bg);
+  color: var(--wx-text);
+  border: 1px solid var(--wx-border);
+  border-left: 3px solid var(--wx-ok);
+  border-radius: 8px;
+  padding: 10px 13px;
+  box-shadow: var(--wx-shadow);
+  font-size: 12.5px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.wx-admin-toast.is-warn {
+  border-left-color: var(--wx-warn);
+}
+
+.wx-admin-toast.is-error {
+  border-left-color: var(--wx-accent);
+}
+
+.wx-admin-toast-close {
+  background: none;
+  border: none;
+  color: var(--wx-muted);
+  cursor: pointer;
+  padding: 0 2px;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.wx-admin-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9992;
+  background: rgba(0, 0, 0, 0.36);
+  display: none;
+}
+
+.wx-admin-backdrop.is-open {
+  display: block;
+}
+
+.wx-admin-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(520px, 100vw);
+  z-index: 9993;
+  background: var(--wx-bg);
+  color: var(--wx-text);
+  border-left: 1px solid var(--wx-border);
+  box-shadow: var(--wx-shadow);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.22s ease;
+}
+
+.wx-admin-drawer.is-open {
+  transform: translateX(0);
+}
+
+.wx-admin-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--wx-border);
+}
+
+.wx-admin-drawer-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.wx-admin-drawer-sub {
+  font-size: 12px;
+  color: var(--wx-muted);
+  margin-top: 2px;
+}
+
+.wx-admin-close-btn {
+  background: none;
+  border: 1px solid var(--wx-border);
+  color: var(--wx-text);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.wx-admin-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 18px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wx-admin-card {
+  background: var(--wx-surface);
+  border: 1px solid var(--wx-border);
+  border-radius: 10px;
+  padding: 13px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wx-admin-card-title {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.wx-admin-auth-badge {
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--wx-border);
+  color: var(--wx-muted);
+}
+
+.wx-admin-auth-badge.is-ok {
+  color: var(--wx-ok);
+  border-color: currentColor;
+}
+
+.wx-admin-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.wx-admin-toggle input {
+  margin-top: 3px;
+  accent-color: var(--wx-accent);
+}
+
+.wx-admin-toggle small {
+  display: block;
+  color: var(--wx-muted);
+  font-size: 11.5px;
+}
+
+.wx-admin-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.wx-admin-btn {
+  appearance: none;
+  border: 1px solid var(--wx-border);
+  background: var(--wx-bg);
+  color: var(--wx-text);
+  border-radius: 7px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.wx-admin-btn:hover:not(:disabled) {
+  border-color: var(--wx-accent);
+}
+
+.wx-admin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wx-admin-btn.is-primary {
+  background: var(--wx-accent);
+  color: #ffffff;
+  border-color: var(--wx-accent);
+}
+
+.wx-admin-btn.is-primary:hover:not(:disabled) {
+  opacity: 0.92;
+}
+
+.wx-admin-paste-box {
+  width: 100%;
+  min-height: 112px;
+  resize: vertical;
+  border: 1px dashed var(--wx-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--wx-bg);
+  color: var(--wx-text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.5;
+  outline: none;
+}
+
+.wx-admin-paste-box:focus {
+  border-color: var(--wx-accent);
+}
+
+.wx-admin-dropzone {
+  border: 1px dashed var(--wx-border);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  background: var(--wx-bg);
+  cursor: pointer;
+  font-size: 12.5px;
+  color: var(--wx-muted);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.wx-admin-dropzone:hover,
+.wx-admin-dropzone.is-dragover {
+  border-color: var(--wx-accent);
+  background: var(--wx-accent-soft);
+  color: var(--wx-text);
+}
+
+.wx-admin-stats {
+  font-size: 12px;
+  color: var(--wx-muted);
+  background: var(--wx-bg);
+  border: 1px solid var(--wx-border);
+  border-radius: 7px;
+  padding: 8px 10px;
+}
+
+.wx-admin-warnings {
+  margin: 0;
+  padding: 8px 10px 8px 26px;
+  border-radius: 7px;
+  background: rgba(154, 93, 18, 0.12);
+  border: 1px solid rgba(154, 93, 18, 0.35);
+  color: var(--wx-warn);
+  font-size: 12px;
+}
+
+.wx-admin-log {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: var(--wx-bg);
+  border: 1px solid var(--wx-border);
+  font-size: 12px;
+  max-height: 150px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wx-admin-log-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px dashed var(--wx-border);
+  padding-bottom: 4px;
+}
+
+.wx-admin-log-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .wx-admin-pill {
+    right: 12px;
+    bottom: 12px;
+    padding: 8px 12px;
+  }
+  .wx-admin-toast-stack {
+    right: 12px;
+    bottom: 58px;
+  }
+}
