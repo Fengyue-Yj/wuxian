@@ -10,17 +10,14 @@
   --rule-color: rgba(44, 42, 41, 0.22);
   --caption-bg: rgba(44, 42, 41, 0.025);
   --font-serif: var(--font-serif-en), "KingHwa_OldSong", "STSong", "Songti SC", "SimSun", Georgia, serif;
-  --font-ui: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 html[lang="zh-TW"] {
   --font-serif: var(--font-serif-en), "KingHwa_OldSong", "Songti TC", "LiSong Pro", "PMingLiU", Georgia, serif;
-  --font-ui: "PingFang TC", "Heiti TC", "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 html[lang="en"] {
   --font-serif: var(--font-serif-en), "Cormorant Garamond", Georgia, "KingHwa_OldSong", serif;
-  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 /* Dark Mode Overrides */
@@ -323,8 +320,12 @@ html.dark .copy-status { color: #c95c55; }
   box-shadow: 0 4px 25px rgba(0,0,0,0.1);
   z-index: 60;
   max-width: calc(100vw - 2rem);
-  font-family: var(--font-ui);
-  font-variant-numeric: tabular-nums;
+  font-family: var(--font-serif);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.calendar-popup button {
+  font-family: var(--font-serif);
+  font-variant-numeric: lining-nums tabular-nums;
 }
 html.dark .calendar-popup { box-shadow: 0 4px 25px rgba(0,0,0,0.6); }
 
@@ -456,7 +457,8 @@ html.dark .calendar-popup .rdp-root {
   border: 1px solid var(--meta-color);
   border-radius: 8px;
   padding: 1.2rem;
-  min-width: 180px;
+  min-width: 218px;
+  font-family: var(--font-serif);
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 html.dark .settings-dropdown { box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
@@ -467,10 +469,10 @@ html.dark .settings-dropdown { box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.85rem;
+  font-size: 0.92rem;
   color: var(--meta-color);
   margin-bottom: 0.6rem;
-  font-family: var(--font-ui);
+  font-family: var(--font-serif);
 }
 .settings-options {
   display: flex;
@@ -480,13 +482,13 @@ html.dark .settings-dropdown { box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
 .settings-options button {
   background: none;
   border: 1px solid var(--meta-color);
-  padding: 0.25rem 0.6rem;
+  padding: 0.25rem 0.65rem;
   border-radius: 4px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--meta-color);
   cursor: pointer;
   transition: all 0.2s;
-  font-family: var(--font-ui);
+  font-family: var(--font-serif);
 }
 .settings-options button:hover {
   background-color: rgba(0,0,0,0.05);
