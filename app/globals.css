@@ -9,6 +9,8 @@
   --caption-color: #5e5b55;
   --rule-color: rgba(44, 42, 41, 0.22);
   --caption-bg: rgba(44, 42, 41, 0.025);
+  --font-serif-en: "Cormorant Garamond", "Cormorant Garamond Fallback";
+  --font-cursive: "Dancing Script";
   --font-serif: var(--font-serif-en), "KingHwa_OldSong", "STSong", "Songti SC", "SimSun", Georgia, serif;
 }
 
@@ -17,7 +19,7 @@ html[lang="zh-TW"] {
 }
 
 html[lang="en"] {
-  --font-serif: var(--font-serif-en), "Cormorant Garamond", Georgia, "KingHwa_OldSong", serif;
+  --font-serif: var(--font-serif-en), Georgia, "KingHwa_OldSong", serif;
 }
 
 /* Dark Mode Overrides */
