@@ -2,22 +2,10 @@
 import Link from "next/link";
 import { useSettings } from "../../contexts/SettingsContext";
 import SettingsMenu from "../../components/SettingsMenu";
-import { format, parseISO } from "date-fns";
-import { zhCN, zhTW, enUS } from "date-fns/locale";
+import { formatEssayDate } from "@/lib/formatEssayDate";
 
-export default function EssayDetailClient({ essay, contentHtml }) {
+export default function EssayDetailClient({ essay, children }) {
   const { t, language } = useSettings();
-
-  const formatDate = (dateString) => {
-    try {
-      const dateObj = parseISO(dateString);
-      if (language === "en") return format(dateObj, "MMM d, yyyy", { locale: enUS });
-      if (language === "zh-TW") return format(dateObj, "yyyy年M月d日", { locale: zhTW });
-      return format(dateObj, "yyyy年M月d日", { locale: zhCN });
-    } catch (e) {
-      return dateString;
-    }
-  };
 
   return (
     <div className="reading-wrapper fade-in">
@@ -29,20 +17,23 @@ export default function EssayDetailClient({ essay, contentHtml }) {
       </nav>
 
       <header className="reading-header">
-        <h1 className="reading-title">{essay.title}</h1>
+        <h1 className="reading-title" lang="zh-CN">{essay.title}</h1>
         <div className="reading-meta">
-          <span className="reading-date">
-            {formatDate(essay.date)}
-            {essay.author && ` · ${essay.author}`}
-          </span>
+          {essay.date && (
+            <time className="reading-date" dateTime={essay.date}>
+              {formatEssayDate(essay.date, language)}
+            </time>
+          )}
+          {essay.author && <span lang="zh-CN">{essay.date && " · "}{essay.author}</span>}
         </div>
       </header>
 
-      <main className="essay-content" dangerouslySetInnerHTML={{ __html: contentHtml }} />
+      {children}
 
       <footer className="reading-footer">
         <div className="reading-divider"></div>
         <p className="end-mark">{t.endMark}</p>
+        <Link href="/" className="back-link">{t.backHome}</Link>
       </footer>
     </div>
   );

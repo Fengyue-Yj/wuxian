@@ -1,10 +1,15 @@
+import path from "node:path";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import { Marked, Renderer } from "marked";
+import sharp from "sharp";
 import { getEssays, getEssayData } from "@/lib/essays";
 import EssayDetailClient from "./EssayDetailClient";
 
 const defaultRenderer = new Renderer();
 const UNSAFE_IMAGE_PROTOCOL_RE = /^(javascript|vbscript):/i;
+const imagesDirectory = path.join(process.cwd(), "public", "images");
+const imagePathPrefix = "/wuxian/images/";
 const HTML_ESCAPE_MAP = {
   "&": "&amp;",
   "<": "&lt;",
@@ -473,11 +478,60 @@ const markdownParser = new Marked({
       }
       const html = defaultRenderer.image.call(this, token);
       if (html.startsWith("<img ")) {
-        return `<img loading="lazy" decoding="async" ${html.slice(5)}`;
+        const image = token.localImage;
+        const size = image ? `width="${image.width}" height="${image.height}" ` : "";
+        return `<img loading="lazy" decoding="async" ${size}${html.slice(5)}`;
       }
       return html;
     },
   },
+});
+
+const readLocalImage = cache(async (href) => {
+  if (!href.startsWith(imagePathPrefix)) return null;
+
+  try {
+    const filename = decodeURIComponent(href.slice(imagePathPrefix.length).split(/[?#]/, 1)[0]);
+    if (!filename || /[/\\:]/.test(filename) || filename === "." || filename === "..") return null;
+
+    const { autoOrient } = await sharp(path.join(imagesDirectory, filename)).metadata();
+    if (!autoOrient?.width || !autoOrient?.height) return null;
+
+    return {
+      url: `${imagePathPrefix}${encodeURIComponent(filename)}`,
+      width: autoOrient.width,
+      height: autoOrient.height,
+    };
+  } catch {
+    return null;
+  }
+});
+
+const renderEssay = cache(async (slug) => {
+  const essay = await getEssayData(slug);
+  if (!essay) return null;
+
+  const { content, ...essayMeta } = essay;
+  const images = [];
+  const normalizedContent = unescapeCmsEmphasisOutsideCode(content || "");
+  const html = await markdownParser.parse(normalizedContent, {
+    async: true,
+    walkTokens(token) {
+      if (token.type !== "image") return;
+      // Keep document order when selecting the first available share image.
+      const image = readLocalImage(token.href);
+      images.push(image);
+      return image.then((metadata) => {
+        token.localImage = metadata;
+      });
+    },
+  });
+
+  return {
+    essay: essayMeta,
+    contentHtml: enhanceEssayHtml(html),
+    cover: (await Promise.all(images)).find(Boolean),
+  };
 });
 
 export async function generateStaticParams() {
@@ -489,35 +543,41 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const essay = await getEssayData(slug);
-  if (!essay) {
+  const rendered = await renderEssay(slug);
+  if (!rendered) {
     return {};
   }
 
+  const { essay, cover } = rendered;
+  const url = `/wuxian/essays/${encodeURIComponent(essay.slug)}`;
   const pageTitle = `${essay.title} | 吴现 · 无限`;
   const description = essay.excerpt || "枝生无限月，花满自然秋。";
 
   return {
     title: pageTitle,
     description,
+    alternates: { canonical: url },
     openGraph: {
       title: pageTitle,
       description,
       type: "article",
+      url,
+      ...(cover && { images: [cover] }),
     },
   };
 }
 
 export default async function Essay({ params }) {
   const { slug } = await params;
-  const essay = await getEssayData(slug);
-  if (!essay) {
+  const rendered = await renderEssay(slug);
+  if (!rendered) {
     notFound();
   }
 
-  const { content, ...essayMeta } = essay;
-  const normalizedContent = unescapeCmsEmphasisOutsideCode(content || "");
-  const contentHtml = enhanceEssayHtml(markdownParser.parse(normalizedContent));
-
-  return <EssayDetailClient essay={essayMeta} contentHtml={contentHtml} />;
+  const { essay, contentHtml } = rendered;
+  return (
+    <EssayDetailClient essay={essay}>
+      <main className="essay-content" lang="zh-CN" dangerouslySetInnerHTML={{ __html: contentHtml }} />
+    </EssayDetailClient>
+  );
 }

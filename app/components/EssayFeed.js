@@ -1,40 +1,14 @@
 "use client";
 
-import { Fragment, useState, useRef, useEffect } from "react";
+import { Fragment, useState, useRef, useEffect, useId } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSettings } from "../contexts/SettingsContext";
-import { DayPicker } from "react-day-picker";
-import { format, parseISO, isValid } from "date-fns";
-import { zhCN, zhTW, enUS } from "date-fns/locale";
-import "react-day-picker/dist/style.css";
+import { formatEssayDate } from "@/lib/formatEssayDate";
 import { Calendar as CalendarIcon, Check, X } from "lucide-react";
 
-const FALLBACK_LABELS = {
-  "zh-CN": {
-    clearSearch: "清空并关闭搜索",
-    toggleCalendar: "按日期筛选",
-    copyFailed: "请手动复制",
-  },
-  "zh-TW": {
-    clearSearch: "清空並關閉搜尋",
-    toggleCalendar: "按日期篩選",
-    copyFailed: "請手動複製",
-  },
-  en: {
-    clearSearch: "Clear and close search",
-    toggleCalendar: "Filter by date",
-    copyFailed: "Select to copy",
-  },
-};
-
-const parseEssayDate = (dateValue) => {
-  if (typeof dateValue !== "string") return null;
-  const trimmed = dateValue.trim();
-  if (!trimmed) return null;
-  const parsed = parseISO(trimmed);
-  return isValid(parsed) ? parsed : null;
-};
+const EssayCalendar = dynamic(() => import("./EssayCalendar"), { ssr: false });
 
 export default function EssayFeed({ essays = [] }) {
   const { t, language } = useSettings();
@@ -45,92 +19,85 @@ export default function EssayFeed({ essays = [] }) {
   const [popupEmail, setPopupEmail] = useState(null);
   const [copyFailed, setCopyFailed] = useState(false);
 
-  const calendarRef = useRef(null);
+  const searchRef = useRef(null);
+  const searchButtonRef = useRef(null);
+  const calendarButtonRef = useRef(null);
   const submitWrapperRef = useRef(null);
   const contactWrapperRef = useRef(null);
   const searchInputRef = useRef(null);
-
-  const langFallback = FALLBACK_LABELS[language] || FALLBACK_LABELS["zh-CN"];
+  const restoreSearchFocus = useRef(false);
+  const copyRequest = useRef(0);
+  const calendarId = useId();
 
   // Close calendar and email popup on click or tap outside
   useEffect(() => {
     function handleClickOutside(event) {
       const target = event.target;
-      if (calendarRef.current && !calendarRef.current.contains(target)) {
+      if (searchRef.current && !searchRef.current.contains(target)) {
         setShowCalendar(false);
       }
       const inSubmit = submitWrapperRef.current?.contains(target);
       const inContact = contactWrapperRef.current?.contains(target);
       if (!inSubmit && !inContact) {
+        copyRequest.current++;
         setPopupEmail(null);
         setCopyFailed(false);
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("touchstart", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("touchstart", handleClickOutside);
-    };
+    document.addEventListener("pointerdown", handleClickOutside);
+    return () => document.removeEventListener("pointerdown", handleClickOutside);
   }, []);
 
-  // Auto-dismiss email popup after ~2.5s
+  // Leave the address available for manual copying if the clipboard failed.
   useEffect(() => {
-    if (!popupEmail) return;
+    if (!popupEmail || copyFailed) return;
     const timer = setTimeout(() => {
       setPopupEmail(null);
-      setCopyFailed(false);
     }, 2500);
     return () => clearTimeout(timer);
-  }, [popupEmail]);
+  }, [popupEmail, copyFailed]);
 
-  const essayDates = essays
-    .map((essay) => parseEssayDate(essay?.date))
-    .filter(Boolean);
-
-  const getEssaysOnDay = (day) => {
-    if (!day || !isValid(day)) return [];
-    const formattedDate = format(day, "yyyy-MM-dd");
-    return essays.filter((essay) => {
-      const parsed = parseEssayDate(essay?.date);
-      return parsed ? format(parsed, "yyyy-MM-dd") === formattedDate : false;
-    });
-  };
-
-  const handleDayClick = (day) => {
-    const essaysOnDay = getEssaysOnDay(day);
-    if (essaysOnDay.length === 1 && essaysOnDay[0]?.slug) {
-      setShowCalendar(false);
-      router.push(`/essays/${essaysOnDay[0].slug}`);
-    } else if (essaysOnDay.length > 1) {
-      setSearchQuery(format(day, "yyyy-MM-dd"));
-      setIsSearching(true);
-      setShowCalendar(false);
+  useEffect(() => {
+    if (isSearching) {
+      searchInputRef.current?.focus();
+    } else if (restoreSearchFocus.current) {
+      searchButtonRef.current?.focus();
+      restoreSearchFocus.current = false;
     }
-  };
+  }, [isSearching]);
 
-  const isDayWithEssay = (day) => getEssaysOnDay(day).length > 0;
+  const handleSelectDate = (date) => {
+    const essaysOnDay = essays.filter((essay) => essay.date === date);
+    setShowCalendar(false);
+    if (essaysOnDay.length === 1) {
+      router.push(`/essays/${encodeURIComponent(essaysOnDay[0].slug)}`);
+      return;
+    }
+    setSearchQuery(date);
+    searchInputRef.current?.focus();
+  };
 
   const handleCloseSearch = () => {
+    restoreSearchFocus.current = true;
     setSearchQuery("");
     setShowCalendar(false);
     setIsSearching(false);
   };
 
   const handleSearchKeyDown = (event) => {
-    if (event.key !== "Escape") return;
+    if (event.key !== "Escape" || !isSearching) return;
     event.preventDefault();
-    if (showCalendar && document.activeElement !== searchInputRef.current) {
+    if (showCalendar) {
       setShowCalendar(false);
-      searchInputRef.current?.focus();
+      calendarButtonRef.current?.focus();
       return;
     }
     handleCloseSearch();
   };
 
-  const handleEmailClick = async (email, e) => {
-    e.preventDefault();
+  const handleEmailClick = async (email) => {
+    const request = ++copyRequest.current;
     if (popupEmail === email) {
       setPopupEmail(null);
       setCopyFailed(false);
@@ -139,7 +106,7 @@ export default function EssayFeed({ essays = [] }) {
 
     let didCopy = false;
     try {
-      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+      if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(email);
         didCopy = true;
       }
@@ -147,6 +114,7 @@ export default function EssayFeed({ essays = [] }) {
       didCopy = false;
     }
 
+    if (request !== copyRequest.current) return;
     setCopyFailed(!didCopy);
     setPopupEmail(email);
   };
@@ -164,20 +132,6 @@ export default function EssayFeed({ essays = [] }) {
     );
   });
 
-  const getLocale = () => {
-    if (language === "zh-TW") return zhTW;
-    if (language === "en") return enUS;
-    return zhCN;
-  };
-
-  const formatDate = (dateString) => {
-    const dateObj = parseEssayDate(dateString);
-    if (!dateObj) return typeof dateString === "string" ? dateString : "";
-    if (language === "en") return format(dateObj, "MMM d, yyyy", { locale: enUS });
-    if (language === "zh-TW") return format(dateObj, "yyyy年M月d日", { locale: zhTW });
-    return format(dateObj, "yyyy年M月d日", { locale: zhCN });
-  };
-
   const emailActions = [
     {
       key: "submit",
@@ -193,48 +147,52 @@ export default function EssayFeed({ essays = [] }) {
     },
   ];
 
-  const clearSearchLabel = t?.clearSearch || langFallback.clearSearch;
-  const toggleCalendarLabel = t?.toggleCalendar || langFallback.toggleCalendar;
+  const hasDatedEssays = essays.some((essay) => essay.date);
 
   return (
     <>
       <div className="divider-nav-wrapper">
         <div className="divider-line"></div>
         <nav className={`main-nav ${isSearching ? "is-searching" : ""}`}>
-          <div className="search-container" ref={calendarRef} onKeyDown={handleSearchKeyDown}>
+          <div className="search-container" ref={searchRef} onKeyDown={handleSearchKeyDown}>
             {isSearching ? (
               <div className="search-input-wrapper">
                 <input
                   ref={searchInputRef}
-                  type="text"
+                  type="search"
                   className="search-input"
                   placeholder={t?.searchPlaceholder || ""}
                   aria-label={t?.searchBtn || "Search"}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  autoFocus
                 />
-                <button
-                  type="button"
-                  className="calendar-icon-btn"
-                  onClick={() => setShowCalendar((prev) => !prev)}
-                  aria-label={toggleCalendarLabel}
-                  title={toggleCalendarLabel}
-                >
-                  <CalendarIcon size={16} />
-                </button>
+                {hasDatedEssays && (
+                  <button
+                    ref={calendarButtonRef}
+                    type="button"
+                    className="calendar-icon-btn"
+                    onClick={() => setShowCalendar((prev) => !prev)}
+                    aria-label={t.toggleCalendar}
+                    title={t.toggleCalendar}
+                    aria-expanded={showCalendar}
+                    aria-controls={showCalendar ? calendarId : undefined}
+                  >
+                    <CalendarIcon size={16} aria-hidden="true" />
+                  </button>
+                )}
                 <button
                   type="button"
                   className="search-clear-btn"
                   onClick={handleCloseSearch}
-                  aria-label={clearSearchLabel}
-                  title={clearSearchLabel}
+                  aria-label={t.clearSearch}
+                  title={t.clearSearch}
                 >
-                  <X size={16} />
+                  <X size={16} aria-hidden="true" />
                 </button>
               </div>
             ) : (
               <button
+                ref={searchButtonRef}
                 type="button"
                 className="nav-btn"
                 onClick={() => setIsSearching(true)}
@@ -244,19 +202,12 @@ export default function EssayFeed({ essays = [] }) {
             )}
 
             {showCalendar && (
-              <div className="calendar-popup fade-in">
-                <DayPicker
-                  mode="single"
-                  locale={getLocale()}
-                  defaultMonth={essayDates[0]}
-                  modifiers={{ hasEssay: essayDates }}
-                  modifiersClassNames={{ hasEssay: "day-has-essay" }}
-                  onDayClick={(day) => {
-                    if (isDayWithEssay(day)) {
-                      handleDayClick(day);
-                    }
-                  }}
-                  disabled={(date) => !isDayWithEssay(date)}
+              <div id={calendarId} className="calendar-popup fade-in">
+                <EssayCalendar
+                  essays={essays}
+                  language={language}
+                  searchQuery={normalizedQuery}
+                  onSelectDate={handleSelectDate}
                 />
               </div>
             )}
@@ -265,6 +216,7 @@ export default function EssayFeed({ essays = [] }) {
           {emailActions.map((item) => (
             <Fragment key={item.key}>
               <span
+                aria-hidden="true"
                 className={`nav-separator ${
                   item.key === "submit" ? "nav-separator-search" : ""
                 }`}
@@ -275,7 +227,7 @@ export default function EssayFeed({ essays = [] }) {
                 <button
                   type="button"
                   className="nav-btn"
-                  onClick={(e) => handleEmailClick(item.email, e)}
+                  onClick={() => handleEmailClick(item.email)}
                 >
                   {item.label}
                 </button>
@@ -288,7 +240,7 @@ export default function EssayFeed({ essays = [] }) {
                     <span>{popupEmail}</span>
                     <span className={`copy-status ${copyFailed ? "copy-failed" : ""}`}>
                       {copyFailed ? (
-                        t?.copyFailed || langFallback.copyFailed
+                        t.copyFailed
                       ) : (
                         <>
                           <Check size={12} /> {t?.copied || "Copied"}
@@ -307,13 +259,15 @@ export default function EssayFeed({ essays = [] }) {
         {filteredEssays.map((essay) => (
           <article className="essay-entry" key={essay.slug}>
             <div className="essay-meta">
-              <span className="essay-date">
-                {formatDate(essay.date)}
-              </span>
-              <span className="essay-dash">—</span>
+              {essay.date && (
+                <time className="essay-date" dateTime={essay.date}>
+                  {formatEssayDate(essay.date, language)}
+                </time>
+              )}
+              {essay.date && <span className="essay-dash" aria-hidden="true">—</span>}
             </div>
             <div className="essay-content-preview">
-              <Link href={`/essays/${essay.slug}`}>
+              <Link href={`/essays/${encodeURIComponent(essay.slug)}`} prefetch={false}>
                 <h2 className="essay-title">{essay.title}</h2>
               </Link>
               <p className="essay-excerpt">{essay.excerpt}</p>
@@ -321,7 +275,7 @@ export default function EssayFeed({ essays = [] }) {
           </article>
         ))}
         {filteredEssays.length === 0 && (
-          <p className="no-essays">
+          <p className="no-essays" role="status">
             {normalizedQuery
               ? t?.noMatch || "No matching essays found."
               : t?.noEssays || "No essays published yet."}
