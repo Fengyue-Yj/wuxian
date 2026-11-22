@@ -197,7 +197,7 @@
       .join("/");
     const url = `https://api.github.com/repos/${repo}/contents/${encodedPath}`;
     const body = {
-      message: opts.message || `Upload optimized image ${filename}`,
+      message: opts.message || `上传压缩图片：${filename}`,
       content: opts.base64Content,
       branch,
     };
@@ -240,7 +240,7 @@
       mediaFolder,
       filename,
       base64Content,
-      message: opts.message || `chore(images): add optimized ${filename}`,
+      message: opts.message || `上传压缩图片：${filename}`,
     });
 
     const headers = {

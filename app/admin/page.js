@@ -4,12 +4,13 @@ import { useEffect } from "react";
 
 export default function AdminRedirect() {
   useEffect(() => {
-    window.location.href = "/wuxian/admin/index.html";
+    window.location.replace("/wuxian/admin/index.html");
   }, []);
 
   return (
-    <div style={{ padding: '2rem', textAlign: 'center', fontFamily: 'sans-serif' }}>
-      正在为您进入后台写作环境，请稍候... (Redirecting to CMS portal)
-    </div>
+    <main style={{ padding: "2rem", textAlign: "center", fontFamily: "sans-serif" }}>
+      <p>正在打开写作与发布后台……</p>
+      <a href="/wuxian/admin/index.html">进入发布后台</a>
+    </main>
   );
 }

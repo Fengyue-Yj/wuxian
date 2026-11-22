@@ -2,8 +2,14 @@ backend:
   name: github
   repo: Fengyue-Yj/wuxian
   branch: master
+  commit_messages:
+    create: '发布{{collection}}：{{slug}}'
+    update: '更新{{collection}}：{{slug}}'
+    delete: '删除{{collection}}：{{slug}}'
+    uploadMedia: '上传媒体：{{path}}'
+    deleteMedia: '删除媒体：{{path}}'
 
-
+display_url: "https://fengyue-yj.github.io/wuxian/"
 media_folder: "public/images"
 public_folder: "/wuxian/images"
 
@@ -22,7 +28,7 @@ media_libraries:
 
 collections:
   - name: "essays"
-    label: "随笔 (Essays)"
+    label: "随笔"
     folder: "content/essays"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
