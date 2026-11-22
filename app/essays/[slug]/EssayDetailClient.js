@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useSettings } from "../../contexts/SettingsContext";
+import EssayComments from "../../components/EssayComments";
 import SettingsMenu from "../../components/SettingsMenu";
 import { formatEssayDate } from "@/lib/formatEssayDate";
 
@@ -33,6 +34,7 @@ export default function EssayDetailClient({ essay, children }) {
       <footer className="reading-footer">
         <div className="reading-divider"></div>
         <p className="end-mark">{t.endMark}</p>
+        <EssayComments key={essay.slug} slug={essay.slug} />
         <Link href="/" className="back-link">{t.backHome}</Link>
       </footer>
     </div>

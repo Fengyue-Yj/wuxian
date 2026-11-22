@@ -557,6 +557,7 @@ export async function generateMetadata({ params }) {
     title: pageTitle,
     description,
     alternates: { canonical: url },
+    other: { "giscus:backlink": new URL(url, "https://fengyue-yj.github.io").href },
     openGraph: {
       title: pageTitle,
       description,

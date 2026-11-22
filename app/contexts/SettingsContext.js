@@ -34,6 +34,8 @@ export const translations = {
     copyFailed: "复制失败，请手动复制",
     backHome: "← 返回首页",
     endMark: "完",
+    commentsHeading: "留言",
+    commentsSignIn: "使用 GitHub 账号登录后即可留言。",
     essays: "随笔"
   },
   "zh-TW": {
@@ -58,6 +60,8 @@ export const translations = {
     copyFailed: "複製失敗，請手動複製",
     backHome: "← 返回首頁",
     endMark: "完",
+    commentsHeading: "留言",
+    commentsSignIn: "使用 GitHub 帳號登入後即可留言。",
     essays: "隨筆"
   },
   "en": {
@@ -82,6 +86,8 @@ export const translations = {
     copyFailed: "Copy failed",
     backHome: "← Back Home",
     endMark: "END",
+    commentsHeading: "Comments",
+    commentsSignIn: "Sign in with GitHub to leave a comment.",
     essays: "Essays"
   }
 };

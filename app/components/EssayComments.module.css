@@ -1,0 +1,17 @@
+.section {
+  margin-block: 3rem 2.5rem;
+  padding-block-start: 1.5rem;
+  border-block-start: 1px solid var(--rule-color);
+  text-align: start;
+}
+
+.section h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.section p {
+  margin: 0 0 1.15rem;
+  color: var(--meta-color);
+}
